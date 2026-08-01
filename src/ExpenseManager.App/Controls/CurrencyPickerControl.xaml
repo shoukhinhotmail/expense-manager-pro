@@ -1,0 +1,14 @@
+<UserControl
+    x:Class="ExpenseManager.App.Controls.CurrencyPickerControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <AutoSuggestBox x:Name="SuggestBox"
+                     PlaceholderText="Search currency — e.g. USD, Euro, Rupee"
+                     QueryIcon="Find"
+                     GotFocus="SuggestBox_GotFocus"
+                     Tapped="SuggestBox_Tapped"
+                     TextChanged="SuggestBox_TextChanged"
+                     QuerySubmitted="SuggestBox_QuerySubmitted"
+                     SuggestionChosen="SuggestBox_SuggestionChosen" />
+</UserControl>

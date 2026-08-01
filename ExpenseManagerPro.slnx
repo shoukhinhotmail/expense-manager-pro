@@ -1,0 +1,17 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/ExpenseManager.App/ExpenseManager.App.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="Debug|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="src/ExpenseManager.Core/ExpenseManager.Core.csproj" />
+    <Project Path="src/ExpenseManager.Data/ExpenseManager.Data.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ExpenseManager.Tests/ExpenseManager.Tests.csproj" />
+  </Folder>
+</Solution>

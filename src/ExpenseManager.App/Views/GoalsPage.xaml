@@ -1,0 +1,185 @@
+<Page
+    x:Class="ExpenseManager.App.Views.GoalsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:ExpenseManager.App.ViewModels">
+
+    <ScrollViewer Padding="32,24,32,32">
+        <StackPanel Spacing="28">
+            <StackPanel Spacing="2">
+                <TextBlock Text="Goals" Style="{StaticResource AppPageTitleStyle}" />
+                <TextBlock Text="Track savings targets and keep spending inside a budget" Style="{StaticResource AppMutedTextStyle}" />
+            </StackPanel>
+
+            <StackPanel Spacing="16">
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Savings goals" Style="{StaticResource AppSectionHeaderStyle}" VerticalAlignment="Center" />
+                    <Button Grid.Column="1" Style="{StaticResource AccentButtonStyle}" Click="AddGoalButton_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE710;" FontSize="14" />
+                            <TextBlock Text="Add goal" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+                <ItemsControl ItemsSource="{x:Bind ViewModel.SavingsGoals, Mode=OneWay}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="3" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SavingsGoalRow">
+                            <Border Style="{StaticResource AppCardStyle}" Width="320" Margin="0,0,16,16">
+                                <StackPanel Spacing="10">
+                                    <Grid ColumnSpacing="12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Width="40" Height="40" CornerRadius="{StaticResource AppChipCornerRadius}"
+                                                Background="{Binding Goal.Color, Converter={StaticResource HexToTintBrushConverter}}">
+                                            <FontIcon Glyph="&#xE734;" FontSize="16"
+                                                      Foreground="{Binding Goal.Color, Converter={StaticResource HexToBrushConverter}}"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Goal.Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Style="{StaticResource AppMutedTextStyle}" FontSize="12"
+                                                       Text="{Binding Goal.TargetDate, Converter={StaticResource NullableDateToTextConverter}}"
+                                                       Visibility="{Binding Goal.TargetDate, Converter={StaticResource NullableToVisibilityConverter}}" />
+                                        </StackPanel>
+                                        <Button Grid.Column="2" VerticalAlignment="Center" Background="Transparent" BorderThickness="0">
+                                            <FontIcon Glyph="&#xE712;" FontSize="16" />
+                                            <Button.Flyout>
+                                                <MenuFlyout>
+                                                    <MenuFlyoutItem Text="Add contribution" Icon="Add" Click="AddContributionButton_Click" Tag="{Binding}" />
+                                                    <MenuFlyoutItem Text="Edit" Icon="Edit" Click="EditGoalButton_Click" Tag="{Binding Goal}" />
+                                                    <MenuFlyoutItem Text="Delete" Icon="Delete" Click="DeleteGoalButton_Click" Tag="{Binding Goal}" />
+                                                </MenuFlyout>
+                                            </Button.Flyout>
+                                        </Button>
+                                    </Grid>
+
+                                    <ProgressBar Value="{Binding ProgressPercent}" Maximum="100" />
+
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{StaticResource AppMutedTextStyle}" FontSize="12">
+                                            <Run Text="{Binding Goal.CurrentAmount, Converter={StaticResource CurrencyConverter}}" />
+                                            <Run Text="of" />
+                                            <Run Text="{Binding Goal.TargetAmount, Converter={StaticResource CurrencyConverter}}" />
+                                        </TextBlock>
+                                        <TextBlock Grid.Column="1" FontWeight="SemiBold" FontSize="12"
+                                                   Foreground="{StaticResource AppIncomeBrush}"
+                                                   Text="Goal reached"
+                                                   Visibility="{Binding IsComplete, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <StackPanel Spacing="10" Padding="0,24" HorizontalAlignment="Center"
+                            Visibility="{x:Bind ViewModel.SavingsGoals.Count, Mode=OneWay, Converter={StaticResource CountToVisibilityConverter}}">
+                    <FontIcon Glyph="&#xE734;" FontSize="28" Opacity="0.35" HorizontalAlignment="Center" />
+                    <TextBlock Text="No savings goals yet" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                    <TextBlock Text="Add a target to start tracking progress." Style="{StaticResource AppMutedTextStyle}" HorizontalAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Spacing="16">
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Budget limits" Style="{StaticResource AppSectionHeaderStyle}" VerticalAlignment="Center" />
+                    <Button Grid.Column="1" Style="{StaticResource AccentButtonStyle}" Click="AddBudgetButton_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE710;" FontSize="14" />
+                            <TextBlock Text="Add budget" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+                <ItemsControl ItemsSource="{x:Bind ViewModel.BudgetLimits, Mode=OneWay}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="3" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:BudgetLimitRow">
+                            <Border Style="{StaticResource AppCardStyle}" Width="320" Margin="0,0,16,16">
+                                <StackPanel Spacing="10">
+                                    <Grid ColumnSpacing="12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ContentControl Grid.Column="0" ContentTemplate="{StaticResource CategoryAvatarTemplate}"
+                                                         Content="{Binding Budget.Category}" IsTabStop="False" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Budget.Category.Name}" FontWeight="SemiBold" />
+                                            <TextBlock Style="{StaticResource AppMutedTextStyle}" FontSize="12">
+                                                <Run Text="{Binding Budget.LimitAmount, Converter={StaticResource CurrencyConverter}}" />
+                                                <Run Text="/" />
+                                                <Run Text="{Binding Budget.Period}" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <Button Grid.Column="2" VerticalAlignment="Center" Background="Transparent" BorderThickness="0">
+                                            <FontIcon Glyph="&#xE712;" FontSize="16" />
+                                            <Button.Flyout>
+                                                <MenuFlyout>
+                                                    <MenuFlyoutItem Text="Edit" Icon="Edit" Click="EditBudgetButton_Click" Tag="{Binding Budget}" />
+                                                    <MenuFlyoutItem Text="Delete" Icon="Delete" Click="DeleteBudgetButton_Click" Tag="{Binding Budget}" />
+                                                </MenuFlyout>
+                                            </Button.Flyout>
+                                        </Button>
+                                    </Grid>
+
+                                    <ProgressBar Value="{Binding ProgressPercent}" Maximum="100"
+                                                 Foreground="{Binding IsOverLimit, Converter={StaticResource BoolToBrushConverter}, ConverterParameter=AppWarningBrush|AppAccentBrush}" />
+
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{StaticResource AppMutedTextStyle}" FontSize="12">
+                                            <Run Text="{Binding Spent, Converter={StaticResource CurrencyConverter}}" />
+                                            <Run Text="spent" />
+                                            <Run Text="{Binding PeriodLabel}" />
+                                        </TextBlock>
+                                        <TextBlock Grid.Column="1" FontWeight="SemiBold" FontSize="12"
+                                                   Foreground="{StaticResource AppWarningBrush}"
+                                                   Text="Over limit"
+                                                   Visibility="{Binding IsOverLimit, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <StackPanel Spacing="10" Padding="0,24" HorizontalAlignment="Center"
+                            Visibility="{x:Bind ViewModel.BudgetLimits.Count, Mode=OneWay, Converter={StaticResource CountToVisibilityConverter}}">
+                    <FontIcon Glyph="&#xE9D9;" FontSize="28" Opacity="0.35" HorizontalAlignment="Center" />
+                    <TextBlock Text="No budget limits yet" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                    <TextBlock Text="Cap a category so overspending doesn't sneak up on you." Style="{StaticResource AppMutedTextStyle}" HorizontalAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
