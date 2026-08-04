@@ -1,7 +1,0 @@
-{
-  "profiles": {
-    "ExpenseManagerPro (Packaged)": {
-      "commandName": "MsixPackage"
-    }
-  }
-}
